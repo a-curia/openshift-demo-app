@@ -11,8 +11,14 @@ public class TestController {
 	
 	private Logger logger = LoggerFactory.getLogger(TestController.class);
 	
+	@RequestMapping({"/",""})
+	public String endpointRoot() {
+		logger.info("logging... testEndpoint() -> {}", "OK");
+		return "Hello from test endpoint!";
+	}	
+	
 	@RequestMapping("/test")
-	public String testEndpoint() {
+	public String endpointTest() {
 		logger.info("logging... testEndpoint() -> {}", "OK");
 		return "Hello from test endpoint!";
 	}
