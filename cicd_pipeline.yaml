@@ -1,45 +1,13 @@
-apiVersion: v1
-kind: Template
-labels:
-  template: cicd
-  group: cicd
-metadata:
-  annotations:
-    description: Creates the CI/CD infrastructure with Jenkins, Gogs, Nexus and SonarQube
-    iconClass: icon-jenkins
-    tags: instant-app,jenkins,gogs,nexus,cicd
-  name: cicd
-message: The CI/CD infrastructure composed of Jenkins, Gogs, Nexus Repository and SonarQube services has been created in your project.  Jenkins username/password are admin/${JENKINS_PASSWORD} and Gogs username/password are gogs/${GOGS_PASSWORD}.  The tutorial at https://github.com/OpenShiftDemos/openshift-cd-demo contains more information about using this CI/CD demo.
-parameters:
-- description: Password for the Gogs user.
-  displayName: Gogs Password
-  value: password
-  name: GOGS_PASSWORD
-  required: true
-- displayName: DEV project name
-  value: automatic-tests
-  name: DEV_PROJECT
-  required: true
 # Pipeline
 apiVersion: v1
 kind: BuildConfig
 metadata:
-    labels:
-      app: cicd-pipeline
-      name: cicd-pipeline
-    name: tasks-pipeline
+  labels:
+    name: sample-pipeline-openshift-client-plugin
+  name: sample-pipeline-openshift-client-plugin
 spec:
-    triggers:
-      - type: GitHub
-        github:
-          secret: ${WEBHOOK_SECRET}
-      - type: Generic
-        generic:
-          secret: ${WEBHOOK_SECRET}
-    runPolicy: Serial
-    source:
-      type: None
-    strategy:
+  strategy:
+      type: JenkinsPipeline
       jenkinsPipelineStrategy:
         jenkinsfile: |-
           node('maven') {
@@ -85,4 +53,4 @@ spec:
             def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
             matcher ? matcher[0][1] : null
           }
-      type: JenkinsPipeline
+      
