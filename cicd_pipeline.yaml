@@ -46,7 +46,7 @@ parameters:
              def mvnCmd = "mvn "
 
              stage ('Build') {
-               git branch: 'eap-7', url: 'https://github.com/adriancuria/openshift-demo-app.git'
+               git branch: 'master', url: 'https://github.com/adriancuria/openshift-demo-app.git'
                sh "${mvnCmd} clean install -DskipTests=true"
              }
 
