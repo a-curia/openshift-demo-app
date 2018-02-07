@@ -14,12 +14,8 @@ metadata:
 message: The CI/CD infrastructure composed of Jenkins, Gogs, Nexus Repository and SonarQube services has been created in your project.  Jenkins username/password are admin/${JENKINS_PASSWORD} and Gogs username/password are gogs/${GOGS_PASSWORD}.  The tutorial at https://github.com/OpenShiftDemos/openshift-cd-demo contains more information about using this CI/CD demo.
 parameters:
 - displayName: DEV project name
-  value: dev
+  value: automatic-tests
   name: DEV_PROJECT
-  required: true
-- displayName: STAGE project name
-  value: stage
-  name: STAGE_PROJECT
   required: true
 # Pipeline
 - apiVersion: v1
@@ -98,41 +94,3 @@ parameters:
       app: cicd-pipeline
       role: jenkins-slave
     name: jenkins-slaves
-  data:
-    maven-template: |-
-      <org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
-        <inheritFrom></inheritFrom>
-        <name>mvn</name>
-        <privileged>false</privileged>
-        <alwaysPullImage>false</alwaysPullImage>
-        <instanceCap>2147483647</instanceCap>
-        <idleMinutes>0</idleMinutes>
-        <label>mvn</label>
-        <serviceAccount>jenkins</serviceAccount>
-        <nodeSelector></nodeSelector>
-        <customWorkspaceVolumeEnabled>false</customWorkspaceVolumeEnabled>
-        <workspaceVolume class="org.csanchez.jenkins.plugins.kubernetes.volumes.workspace.EmptyDirWorkspaceVolume">
-          <memory>false</memory>
-        </workspaceVolume>
-        <volumes />
-        <containers>
-          <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
-            <name>jnlp</name>
-            <image>registry.access.redhat.com/openshift3/jenkins-slave-maven-rhel7</image>
-            <privileged>false</privileged>
-            <alwaysPullImage>false</alwaysPullImage>
-            <workingDir>/tmp</workingDir>
-            <command></command>
-            <args>${computer.jnlpmac} ${computer.name}</args>
-            <ttyEnabled>false</ttyEnabled>
-            <resourceRequestCpu>200m</resourceRequestCpu>
-            <resourceRequestMemory>1Gi</resourceRequestMemory>
-            <resourceLimitCpu>1</resourceLimitCpu>
-            <resourceLimitMemory>4Gi</resourceLimitMemory>
-            <envVars/>
-          </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
-        </containers>
-        <envVars/>
-        <annotations/>
-        <imagePullSecrets/>
-      </org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
