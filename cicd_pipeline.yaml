@@ -21,16 +21,14 @@ parameters:
   name: DEV_PROJECT
   required: true
 # Pipeline
-- apiVersion: v1
-  kind: BuildConfig
-  metadata:
-    annotations:
-      pipeline.alpha.openshift.io/uses: '[{"name": "jenkins", "namespace": "", "kind": "DeploymentConfig"}]'
+apiVersion: v1
+kind: BuildConfig
+metadata:
     labels:
       app: cicd-pipeline
       name: cicd-pipeline
     name: tasks-pipeline
-  spec:
+spec:
     triggers:
       - type: GitHub
         github:
@@ -45,21 +43,18 @@ parameters:
       jenkinsPipelineStrategy:
         jenkinsfile: |-
           node('maven') {
-             // define commands
-             def mvnCmd = "mvn "
-
              stage ('Build') {
                git branch: 'master', url: 'https://github.com/adriancuria/openshift-demo-app.git'
-               sh "${mvnCmd} clean install -DskipTests=true"
+               sh "mvn clean install -DskipTests=true"
              }
 
              stage ('Test') {
-               sh "${mvnCmd} test"
+               sh "mvn test"
                step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
              }
             
              stage ('Analysis (Security, Bugs, etc)') {
-               sh "${mvnCmd} site -DskipTests=true"
+               sh "mvn site -DskipTests=true"
               
                step([$class: 'CheckStylePublisher', unstableTotalAll:'300'])
                step([$class: 'PmdPublisher', unstableTotalAll:'20'])
@@ -69,7 +64,7 @@ parameters:
              }
 
              stage ('Push to Nexus') {
-               sh "${mvnCmd} deploy -DskipTests=true"
+               sh "mvn deploy -DskipTests=true"
              }
 
              stage ('Deploy DEV') {
