@@ -24,16 +24,6 @@ metadata:
       name: cicd-pipeline
     name: tasks-pipeline
 spec:
-    triggers:
-      - type: GitHub
-        github:
-          secret: ${WEBHOOK_SECRET}
-      - type: Generic
-        generic:
-          secret: ${WEBHOOK_SECRET}
-    runPolicy: Serial
-    source:
-      type: None
     strategy:
       jenkinsPipelineStrategy:
         jenkinsfile: |-
